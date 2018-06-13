@@ -1,5 +1,5 @@
-# hysds-packer-templates
-Packer templates for HySDS.
+# hysds-packer-gco
+Packer adapation for HySDS component images for Google Cloud Platform (GCP).  
 
 ## Requisites
 - Install packer: https://packer.io/
