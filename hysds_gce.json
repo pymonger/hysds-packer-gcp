@@ -29,6 +29,7 @@
   "provisioners": [
     {
       "type": "shell",
+      "expect_disconnect": true,
       "inline": [
         "sudo sed -i 's/^SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config",
         "sudo yum -y update",
@@ -41,6 +42,7 @@
     },
     {
       "type": "shell",
+      "expect_disconnect": true,
       "pause_before": "60s",
       "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'",
       "inline": [
@@ -48,7 +50,7 @@
         "chmod 600 ~/.git_oauth_token",
         "source ~/.git_oauth_token",
         "cd /tmp",
-        "curl -skLO -H 'Authorization: token {{ user `git_oauth_token` }}' https://github.jpl.nasa.gov/raw/hysds-org/puppet-{{ user `hysds_component` }}/master/install.sh",
+        "curl -skLO https://raw.githubusercontent.com/hysds/puppet-{{ user `hysds_component` }}/master/install.sh",
         "chmod 755 /tmp/install.sh",
         "./install.sh",
         "reboot",
