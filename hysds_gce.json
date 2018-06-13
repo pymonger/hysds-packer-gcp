@@ -1,0 +1,94 @@
+{
+  "variables": {
+    "myusername":      "{{ env `OS_USERNAME` }}",
+    "mypassword":      "{{ env `OS_PASSWORD` }}",
+    "account_file":    null,
+    "project_id":      null,
+    "source_image":    null,
+    "zone":            "us-central1-f",
+    "disk_size":       "10",
+    "image_name":      null,
+    "git_oauth_token": null,
+    "hysds_component": null
+  },
+  "builders": [
+    {
+      "name": "jpl-gce",
+      "type": "googlecompute",
+      "ssh_username": "ops",
+      "account_file": "{{ user `account_file` }}",
+      "project_id": "{{ user `project_id` }}",
+      "source_image": "{{ user `source_image` }}",
+      "zone": "{{ user `zone` }}",
+      "disk_size": "{{ user `disk_size` }}",
+      "image_name": "{{ user `image_name` }}",
+      "preemptible": true,
+      "ssh_pty": true
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "sudo sed -i 's/^SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config",
+        "sudo yum -y update",
+        "sudo yum install -y epel-release",
+        "sudo yum -y update",
+        "sudo yum -y install puppet puppet-firewalld nscd ntp wget curl subversion git vim screen",
+        "sudo reboot",
+        "sudo sleep 60"
+      ]
+    },
+    {
+      "type": "shell",
+      "pause_before": "60s",
+      "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'",
+      "inline": [
+        "echo 'GIT_OAUTH_TOKEN={{ user `git_oauth_token` }}' > ~/.git_oauth_token",
+        "chmod 600 ~/.git_oauth_token",
+        "source ~/.git_oauth_token",
+        "cd /tmp",
+        "curl -skLO -H 'Authorization: token {{ user `git_oauth_token` }}' https://github.jpl.nasa.gov/raw/hysds-org/puppet-{{ user `hysds_component` }}/master/install.sh",
+        "chmod 755 /tmp/install.sh",
+        "./install.sh",
+        "reboot",
+        "sleep 60"
+      ]
+    },
+    {
+      "type": "shell",
+      "pause_before": "60s",
+      "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -u ops -E sh '{{ .Path }}'",
+      "inline": [
+        "cd /home/ops",
+        "./install_hysds.sh"
+      ]
+    },
+    {
+      "type": "shell",
+      "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -u ops -E sh '{{ .Path }}'",
+      "inline": [
+        "if [ -e '/home/ops/.aws/config' ]; then",
+        "  sed -i 's#__AWS_REGION__#{{ user `region` }}#g' /home/ops/.aws/config",
+        "  sed -i 's#__AWS_ACCESS_KEY__#{{ user `access_key` }}#g' /home/ops/.aws/config",
+        "  sed -i 's#__AWS_SECRET_KEY__#{{ user `secret_key` }}#g' /home/ops/.aws/config",
+        "fi",
+        "if [ -e '/home/ops/.aws/credentials' ]; then",
+        "  sed -i 's#__AWS_REGION__#{{ user `region` }}#g' /home/ops/.aws/credentials",
+        "  sed -i 's#__AWS_ACCESS_KEY__#{{ user `access_key` }}#g' /home/ops/.aws/credentials",
+        "  sed -i 's#__AWS_SECRET_KEY__#{{ user `secret_key` }}#g' /home/ops/.aws/credentials",
+        "fi",
+        "if [ -e '/home/ops/.boto' ]; then",
+        "  sed -i 's#__AWS_REGION__#{{ user `region` }}#g' /home/ops/.boto",
+        "  sed -i 's#__AWS_ACCESS_KEY__#{{ user `access_key` }}#g' /home/ops/.boto",
+        "  sed -i 's#__AWS_SECRET_KEY__#{{ user `secret_key` }}#g' /home/ops/.boto",
+        "fi",
+        "if [ -e '/home/ops/.s3cfg' ]; then",
+        "  sed -i 's#__AWS_REGION__#{{ user `region` }}#g' /home/ops/.s3cfg",
+        "  sed -i 's#__AWS_ACCESS_KEY__#{{ user `access_key` }}#g' /home/ops/.s3cfg",
+        "  sed -i 's#__AWS_SECRET_KEY__#{{ user `secret_key` }}#g' /home/ops/.s3cfg",
+        "fi"
+      ]
+    }
+  ]
+}
