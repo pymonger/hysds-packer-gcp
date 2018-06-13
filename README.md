@@ -1,4 +1,4 @@
-# hysds-packer-gco
+# hysds-packer-gcp
 Packer adapation for HySDS component images for Google Cloud Platform (GCP).  
 
 ## Requisites
