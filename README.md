@@ -8,7 +8,7 @@ Packer adapation for creating HySDS component images in Google Cloud Platform (G
 
 ### Google Cloud Platform (Google Compute Engine)
 1. Make sure you have your account file (account.json).
-  - If not, you can generate the [service account credential](https://cloud.google.com/storage/docs/authentication#service_accounts) service file. 
+  - If not, [generate your service account credential](https://cloud.google.com/storage/docs/authentication#service_accounts). 
 2. Determine the source image (default is centos-7-v20180611).
 3. Determine which HySDS component you want to create an image for
   - mozart, metrics, grq, factotum, cont_int, and autoscale
