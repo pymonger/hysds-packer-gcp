@@ -4,11 +4,10 @@
     "mypassword":      "{{ env `OS_PASSWORD` }}",
     "account_file":    null,
     "project_id":      null,
-    "source_image":    null,
+    "source_image":    "centos-7-v20180611",
     "zone":            "us-central1-f",
     "disk_size":       "10",
     "image_name":      null,
-    "git_oauth_token": null,
     "hysds_component": null
   },
   "builders": [
@@ -46,9 +45,6 @@
       "pause_before": "60s",
       "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'",
       "inline": [
-        "echo 'GIT_OAUTH_TOKEN={{ user `git_oauth_token` }}' > ~/.git_oauth_token",
-        "chmod 600 ~/.git_oauth_token",
-        "source ~/.git_oauth_token",
         "cd /tmp",
         "curl -skLO https://raw.githubusercontent.com/hysds/puppet-{{ user `hysds_component` }}/master/install.sh",
         "chmod 755 /tmp/install.sh",
@@ -64,32 +60,6 @@
       "inline": [
         "cd /home/ops",
         "./install_hysds.sh"
-      ]
-    },
-    {
-      "type": "shell",
-      "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -u ops -E sh '{{ .Path }}'",
-      "inline": [
-        "if [ -e '/home/ops/.aws/config' ]; then",
-        "  sed -i 's#__AWS_REGION__#{{ user `region` }}#g' /home/ops/.aws/config",
-        "  sed -i 's#__AWS_ACCESS_KEY__#{{ user `access_key` }}#g' /home/ops/.aws/config",
-        "  sed -i 's#__AWS_SECRET_KEY__#{{ user `secret_key` }}#g' /home/ops/.aws/config",
-        "fi",
-        "if [ -e '/home/ops/.aws/credentials' ]; then",
-        "  sed -i 's#__AWS_REGION__#{{ user `region` }}#g' /home/ops/.aws/credentials",
-        "  sed -i 's#__AWS_ACCESS_KEY__#{{ user `access_key` }}#g' /home/ops/.aws/credentials",
-        "  sed -i 's#__AWS_SECRET_KEY__#{{ user `secret_key` }}#g' /home/ops/.aws/credentials",
-        "fi",
-        "if [ -e '/home/ops/.boto' ]; then",
-        "  sed -i 's#__AWS_REGION__#{{ user `region` }}#g' /home/ops/.boto",
-        "  sed -i 's#__AWS_ACCESS_KEY__#{{ user `access_key` }}#g' /home/ops/.boto",
-        "  sed -i 's#__AWS_SECRET_KEY__#{{ user `secret_key` }}#g' /home/ops/.boto",
-        "fi",
-        "if [ -e '/home/ops/.s3cfg' ]; then",
-        "  sed -i 's#__AWS_REGION__#{{ user `region` }}#g' /home/ops/.s3cfg",
-        "  sed -i 's#__AWS_ACCESS_KEY__#{{ user `access_key` }}#g' /home/ops/.s3cfg",
-        "  sed -i 's#__AWS_SECRET_KEY__#{{ user `secret_key` }}#g' /home/ops/.s3cfg",
-        "fi"
       ]
     }
   ]
