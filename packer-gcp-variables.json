@@ -1,0 +1,8 @@
+{
+  "account_file":"/home/aptbasketball/.config/gcloud/gcp-credentials.json",
+  "project_id":"first-project-204916",
+  "source_image":"centos-7-v20180611",
+  "disk_size":"200",
+  "image_name":"hysds-centos7-autoscale",
+  "hysds_component":"autoscale"
+}
