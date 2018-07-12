@@ -13,6 +13,7 @@ Packer adapation for creating HySDS component images in Google Cloud Platform (G
 3. Determine which HySDS component you want to create an image for
   - mozart, metrics, grq, factotum, ci, and autoscale
   - this will be your *hysds_component* value
+  - the *hysds_component* for ci is cont_int
   - this will also be your *hysds_component_name* value except in the case of
     the autoscale *hysds_component* which should have the *hysds_component_name*
     verdi-autoscale
