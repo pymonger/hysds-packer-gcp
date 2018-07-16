@@ -2,7 +2,6 @@
   "variables": {
     "myusername":      "{{ env `OS_USERNAME` }}",
     "mypassword":      "{{ env `OS_PASSWORD` }}",
-    "account_file":    null,
     "project_id":      null,
     "source_image":    "centos-7-v20180611",
     "zone":            "us-central1-f",
@@ -15,7 +14,6 @@
       "name": "jpl-gce",
       "type": "googlecompute",
       "ssh_username": "ops",
-      "account_file": "{{ user `account_file` }}",
       "project_id": "{{ user `project_id` }}",
       "source_image": "{{ user `source_image` }}",
       "zone": "{{ user `zone` }}",
