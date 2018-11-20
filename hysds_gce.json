@@ -3,8 +3,8 @@
     "myusername":      "{{ env `OS_USERNAME` }}",
     "mypassword":      "{{ env `OS_PASSWORD` }}",
     "project_id":      null,
-    "source_image":    "centos-7-v20180611",
-    "zone":            "us-central1-f",
+    "source_image":    "centos-7-v20181113",
+    "zone":            "us-west2-a",
     "disk_size":       "10",
     "image_name":      null,
     "hysds_component": null
@@ -13,6 +13,7 @@
     {
       "name": "jpl-gce",
       "type": "googlecompute",
+      "account_file": "{{ user `account_file` }}",
       "ssh_username": "ops",
       "project_id": "{{ user `project_id` }}",
       "source_image": "{{ user `source_image` }}",
